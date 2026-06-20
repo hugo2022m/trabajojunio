@@ -8,7 +8,7 @@ PORT = 12345			## Puerto del servidor
 def leer_sensor():
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(2.0)  ## Evita que la web se cuelgue si el sensor no responde
+            s.settimeout(2.0)  
             s.connect((HOST, PORT))
             data = s.recv(1024).decode().strip()
             print("RECIBIDO:", data)
@@ -30,10 +30,10 @@ def calcular_posicion_matriz(valor, min_val=-90, max_val=90):
     proporcion = (valor - min_val) / rango
     return int(proporcion * 3)
 
-## Pestaña 1: Tu Vista Principal Personal (Matriz Creativa)
+
 @app.route('/')
 def index():
-    ejeX, ejeY = leer_sensor()  ## CORREGIDO: Orden correcto de los ejes
+    ejeX, ejeY = leer_sensor()  
     matriz_x = calcular_posicion_matriz(ejeX)
     matriz_y = calcular_posicion_matriz(ejeY)
     
@@ -45,7 +45,7 @@ def index():
         my=matriz_y
     )
 
-## Pestaña 2: Integración Vista Compañero 1 (Requerimiento Etapa 2)
+## Pestaña 2: Integración Vista Compañero 1 
 @app.route('/vista2')
 def vista2():
     ejeX, ejeY = leer_sensor()
@@ -55,7 +55,7 @@ def vista2():
         ejeY=ejeY
     )
 
-## Pestaña 3: Integración Vista Compañero 2 (Requerimiento Etapa 2)
+## Pestaña 3: Integración Vista Compañero 2 
 @app.route('/vista3')
 def vista3():
     ejeX, ejeY = leer_sensor()
