@@ -1,65 +1,159 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="es">
 <head>
- <meta http-equiv="refresh" content="2"></meta>
-<style>
-	#tabla{border-collapse:collapse;
-		}
-	#q1,#q2,#q3,#q4{	/*Varios id con mismas características*/
-		width:100px;
-		height:100px;
-		border:1px solid black;
-		text-align:center;
-		}
-	#q1{background-color:	/*Cuadrante 1*/
-		{% if ejeX > 0 and ejeY > 0 %}
-			lightblue;
-		{% else %}
-			gray;
-		{% endif %}
-		}
-	#q2{background-color:	/*Cuadrante 2*/
-		{% if ejeX > 0 and ejeY < 0 %}
-			lightblue;
-		{% else %}
-			gray;
-		{% endif %}
-		}
-	#q3{background-color:	/*Cuadrante 3*/
-		{% if ejeX < 0 and ejeY > 0 %}
-			lightblue;
-		{% else %}
-			gray;
-		{% endif %}
-		}
-	#q4{background-color:	/*Cuadrante 4*/
-		{% if ejeX < 0 and ejeY < 0 %}
-			lightblue;
-		{% else %}
-			gray;
-		{% endif %}
-		}
-</style>
+    <meta charset="UTF-8">
+    <title>Panel de Telemetría Embebida</title>
+    <style>
+        /* Selectores de etiqueta permitidos */
+        body {
+            background-color: midnightblue;
+            color: white;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        main {
+            width: 100%;
+            max-width: 700px;
+        }
+        h1 {
+            color: deepskyblue;
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        h2 {
+            color: lightslategray;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: normal;
+            border-bottom: 1px solid darkblue;
+            padding-bottom: 15px;
+        }
+        p {
+            color: lightgray;
+            line-height: 1.5;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        nav a {
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
 
+        /* USO ESTRICTO DE IDs PARA DISEÑO */
+        #pestana-activa {
+            background-color: deepskyblue;
+            color: midnightblue;
+        }
+        #pestana-inactiva1, #pestana-inactiva2 {
+            background-color: darkblue;
+            color: lightgray;
+        }
+        #contenedor-explicacion {
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid darkblue;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        #panel-visual {
+            display: flex;
+            gap: 20px;
+        }
+        #bloque-lecturas {
+            flex: 1;
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid darkblue;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        #txt-x { color: deepskyblue; font-size: 1.2rem; }
+        #txt-y { color: crimson; font-size: 1.2rem; }
+        #num-valor { font-size: 2.5rem; font-weight: bold; color: white; display: block; }
+        
+        #contenedor-matriz {
+            flex: 1;
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid darkblue;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #matriz-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            width: 180px;
+            height: 180px;
+        }
+        #matriz-grid div {
+            background-color: midnightblue;
+            border: 1px solid lightslategray;
+            border-radius: 4px;
+        }
+        /* ID dinámico inyectado por Jinja */
+        #celda-activa {
+            background-color: lime !important;
+            box-shadow: 0 0 10px lime;
+        }
+        #boton-recargar {
+            display: block;
+            text-align: center;
+            background-color: darkblue;
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
+    <main>
+        <h1>Visualización de Datos X-Y con Flask</h1>
+        <h2>Desarrollado por: [Tu Nombre]</h2>
 
-<h1>Posición XY</h1>
+        <nav>
+            <a href="/" id="pestana-activa">Vista Matriz</a>
+            <a href="/vista2" id="pestana-inactiva1">Vista Compañero 1</a>
+            <a href="/vista3" id="pestana-inactiva2">Vista Compañero 2</a>
+        </nav>
 
-<p>X = {{ ejeX }}</p>
-<p>Y = {{ ejeY }}</p>
+        <div id="contenedor-explicacion">
+            <p>Mapeo matemático de telemetría angular mediante sockets TCP representado en una cuadrícula matricial de 4x4 sin ejecución de scripts en cliente.</p>
+        </div>
 
-<table id="tabla">
-<tr id="cuadros">
-    <td id="q1">Q1</td>
-    <td id="q2">Q2</td>
-</tr>
-<tr>
-    <td id="q3">Q3</td>
-    <td id="q4">Q4</td>
-</tr>
-</table>
+        <div id="panel-visual">
+            <div id="bloque-lecturas">
+                <p id="txt-x">Eje Horizontal X:<span id="num-valor">{{ ejeX }}°</span></p>
+                <p id="txt-y">Eje Vertical Y:<span id="num-valor">{{ ejeY }}°</span></p>
+            </div>
 
+            <div id="contenedor-matriz">
+                <div id="matriz-grid">
+                    {% for fila in range(4) %}
+                        {% for col in range(4) %}
+                            <div {% if fila == my and col == mx %} id="celda-activa" {% endif %}></div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <a href="/" id="boton-recargar">Actualizar Datos</a>
+    </main>
 </body>
 </html>

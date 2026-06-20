@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Telemetría - Vista 3</title>
+    <style>
+        body {
+            background-color: midnightblue; color: white; font-family: sans-serif; margin: 0; padding: 40px; display: flex; flex-direction: column; align-items: center;
+        }
+        main { width: 100%; max-width: 700px; }
+        h1 { color: teal; text-align: center; font-size: 2rem; }
+        h2 { color: lightslategray; text-align: center; font-size: 1.1rem; border-bottom: 1px solid darkblue; padding-bottom: 15px; }
+        nav { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+        nav a { padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; }
+
+        #pestana-inactiva1, #pestana-inactiva2 { background-color: darkblue; color: lightgray; }
+        #pestana-activa { background-color: teal; color: white; }
+
+        #panel-barras {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid teal;
+            border-radius: 12px;
+            padding: 25px;
+        }
+        #linea-metrica {
+            margin: 20px 0;
+        }
+        #label-eje { font-weight: bold; color: teal; }
+        #boton-recargar {
+            display: block; text-align: center; background-color: darkblue; color: white; padding: 12px; border-radius: 6px; text-decoration: none; margin-top: 20px; font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Visualización de Datos X-Y con Flask</h1>
+        <h2>Integración: Vista de [Nombre Compañero 2]</h2>
+
+        <nav>
+            <a href="/" id="pestana-inactiva1">Vista Matriz</a>
+            <a href="/vista2" id="pestana-inactiva2">Vista Compañero 1</a>
+            <a href="/vista3" id="pestana-activa">Vista Compañero 2</a>
+        </nav>
+
+        <div id="panel-barras">
+            <h3>Representación por Bloques de Carga</h3>
+            <div id="linea-metrica">
+                <span id="label-eje">Magnitud Horizontal X:</span>
+                <p>{{ ejeX }} Grados Procesados</p>
+            </div>
+            <div id="linea-metrica">
+                <span id="label-eje">Magnitud Vertical Y:</span>
+                <p>{{ ejeY }} Grados Procesados</p>
+            </div>
+        </div>
+
+        <a href="/vista3" id="boton-recargar">Solicitar Muestreo</a>
+    </main>
+</body>
+</html>
+
